@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#142c44"><title>Shopping Project | Find deals</title><style>:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#172a3d;background:#f5f8fc}*{box-sizing:border-box}body{margin:0}header{background:white;border-bottom:1px solid #dbe3ef;padding:18px max(20px,calc((100vw - 1050px)/2));font-weight:800}main{max-width:1050px;margin:auto;padding:24px 16px 80px}h1{font-size:clamp(2rem,6vw,3.2rem);letter-spacing:-.045em;line-height:1.13;margin:8px 0 12px}h2{margin:0 0 10px}.muted{color:#516377}.panel{background:white;border:1px solid #dae3f0;border-radius:22px;padding:clamp(18px,4vw,32px);margin:20px 0;box-shadow:0 5px 24px #172a3d08}.tag{display:inline-block;background:#e9f0ff;color:#24466d;border-radius:20px;padding:7px 12px;font-weight:750;font-size:.8rem}label{font-size:.9rem;font-weight:700;display:block;margin:12px 0 6px}.search{display:flex;gap:10px;flex-wrap:wrap}input,select{padding:14px;border:1px solid #b9c7d8;border-radius:12px;font:inherit;min-width:0;background:white}input{flex:1 1 260px}button,.btn{background:#172f47;color:white;border:0;border-radius:12px;padding:13px 17px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}button:hover,.btn:hover{background:#315474}.outline{background:white;color:#172f47;border:1px solid #b9c7d8}.filters{display:flex;gap:10px;flex-wrap:wrap}.filters>div{flex:1 1 170px}.filters select{width:100%}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.item{border:1px solid #dbe3ef;border-radius:16px;padding:18px;background:white}.item h3{margin:8px 0}.item p{color:#516377;font-size:.93rem}.item a{color:#164f8e;font-weight:750;display:inline-block;padding:7px 0}.hint{background:#eff5ff;border-radius:14px;padding:14px;margin:16px 0;color:#294768}.links{display:flex;gap:9px;flex-wrap:wrap}.links a{border:1px solid #bccbda;border-radius:12px;padding:10px 13px;color:#173f67;text-decoration:none;font-weight:750}.small{font-size:.85rem}
+.ebay-live{margin:22px 0}
+.product-card{border:1px solid #dbe3ef;border-radius:16px;overflow:hidden;background:white}
+.product-card img{width:100%;height:190px;object-fit:contain;background:#f8fafc;display:block}
+.product-card .body{padding:15px}
+.product-card h3{font-size:1rem;line-height:1.35;margin:0 0 9px}
+.product-card .price{font-size:1.25rem;font-weight:800;margin:6px 0}
+.product-card .meta{color:#516377;font-size:.86rem;margin:4px 0 12px}
+.loading{padding:14px;border-radius:14px;background:#eff5ff;color:#294768}footer{padding:25px 0;color:#526579;font-size:.85rem}</style></head><body><header>SHOPPING PROJECT <span class="muted" style="font-weight:400">· Temporary name</span></header><main><section class="panel"><span class="tag">NEW · Product Discovery</span><h1>Find the product. Discover more places to buy it.</h1><p class="muted">Search established retailers, outlet sections and refurbished marketplaces. We don't invent prices or claim to compare live deals until product feeds are connected.</p><form id="searchForm"><label for="query">What are you shopping for?</label><div class="search"><input id="query" placeholder="Try air fryer, laptop, running shoes…" required maxlength="120"><button type="submit">Find shopping options</button></div><div class="filters"><div><label for="budget">Your maximum budget (optional)</label><select id="budget"><option value="">Any budget</option><option value="25">Under $25</option><option value="50">Under $50</option><option value="100">Under $100</option><option value="200">Under $200</option><option value="500">Under $500</option></select></div><div><label for="condition">Condition</label><select id="condition"><option value="">Any condition</option><option value="new">New</option><option value="refurbished">Refurbished / open box</option></select></div></div></form><div class="hint" id="status" aria-live="polite">Enter a product to generate direct retailer search links. Prices and availability are shown on the retailer's own page.</div><div id="ebayLive" class="ebay-live" hidden>
+<h2>Live eBay listings</h2>
+<p class="muted small">Current listings returned by eBay. Confirm final price, shipping and condition on eBay before purchasing.</p>
+<div id="ebayMessage" class="loading">Searching eBay…</div>
+<div class="grid" id="ebayResults"></div>
+</div><div id="results" hidden><h2>Search your product directly</h2><div class="grid" id="retailResults"></div></div></section><section class="panel"><span class="tag">Hidden Deals Finder</span><h2 style="margin-top:12px">Go straight to the deals sections</h2><p class="muted">These links open retailers' discount or outlet sections, not individual verified offers.</p><div class="grid" id="deals"></div></section><section class="panel"><h2>Live product data is starting with eBay</h2><p class="muted">eBay listings can now appear directly in search results. Other retailers currently open their own search pages while additional approved product-data integrations are added.</p><div class="hint">We never show made-up discounts, ratings or prices. Check the retailer's shipping, returns, condition and final checkout price before buying.</div></section><footer>Shopping Project is an independent shopping discovery prototype. Outbound links currently are not affiliate links. Stores and offers are subject to their own terms. No purchase is completed on this website.</footer></main><script>
+const stores=[{name:'eBay',base:'https://www.ebay.com/sch/i.html?_nkw=',note:'Marketplace listings; review seller and condition.'},{name:'Walmart',base:'https://www.walmart.com/search?q=',note:'Compare sold-by details and delivery charges.'},{name:'Amazon',base:'https://www.amazon.com/s?k=',note:'Check seller, shipping and final price.'},{name:'Target',base:'https://www.target.com/s?searchTerm=',note:'Check current promotions and pickup options.'},{name:'Best Buy',base:'https://www.bestbuy.com/site/searchpage.jsp?st=',note:'Electronics, open-box and clearance options.'},{name:'Newegg',base:'https://www.newegg.com/p/pl?d=',note:'Computers and electronics; check marketplace seller.'}];
+const deals=[{name:'Woot',url:'https://www.woot.com/',detail:'Daily and limited-time deals; browse today’s offers.'},{name:'Best Buy Outlet',url:'https://www.bestbuy.com/site/electronics/outlet-refurbished-clearance/pcmcat142300050026.c',detail:'Open-box, clearance and refurbished electronics.'},{name:'eBay Refurbished',url:'https://www.ebay.com/e/_electronics/ebay-refurbished',detail:'Browse eligible refurbished products.'},{name:'Back Market',url:'https://www.backmarket.com/en-us',detail:'Refurbished phones, laptops and tablets.'},{name:'Nordstrom Rack',url:'https://www.nordstromrack.com/',detail:'Discounted fashion and accessories.'},{name:'Sierra',url:'https://www.sierra.com/',detail:'Discount outdoor apparel and equipment.'},{name:'Five Below',url:'https://www.fivebelow.com/',detail:'Low-priced toys, accessories and everyday items.'},{name:'Dollar General',url:'https://www.dollargeneral.com/',detail:'Household and everyday essentials.'}];
+const escapeHTML=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const card=(title,note,url,cta)=>`<article class="item"><h3>${escapeHTML(title)}</h3><p>${escapeHTML(note)}</p><a href="${url}" target="_blank" rel="noopener noreferrer">${cta} ↗</a></article>`;
+document.getElementById('deals').innerHTML=deals.map(d=>card(d.name,d.detail,d.url,'Browse deal section')).join('');
+
+const EBAY_API='https://ai-shopping-ebay.bankkk69.workers.dev/search';
+const money=(p)=>p&&p.value!=null?new Intl.NumberFormat('en-US',{style:'currency',currency:p.currency||'USD'}).format(Number(p.value)):'Price unavailable';
+async function loadEbay(q){
+  const box=document.getElementById('ebayLive'),msg=document.getElementById('ebayMessage'),grid=document.getElementById('ebayResults');
+  box.hidden=false; msg.hidden=false; msg.textContent='Searching live eBay listings…'; grid.innerHTML='';
+  try{
+    const r=await fetch(EBAY_API+'?q='+encodeURIComponent(q));
+    if(!r.ok) throw new Error('Search unavailable');
+    const data=await r.json();
+    let items=Array.isArray(data.items)?data.items:[];
+    const budgetValue=document.getElementById('budget').value;
+    if(budgetValue){
+      const maxBudget=Number(budgetValue);
+      items=items.filter(item=>item.price&&Number(item.price.value)<=maxBudget);
+    }
+    if(!items.length){
+      msg.textContent=budgetValue
+        ? `No eBay listings from these results are under $${budgetValue}. Try a higher budget or Any budget.`
+        : 'No eBay listings found for this search.';
+      return;
+    }
+    msg.hidden=true;
+    grid.innerHTML=items.map(item=>{
+      const image=item.image?`<img src="${escapeHTML(item.image)}" alt="" loading="lazy">`:'';
+      const shipping=item.shipping&&Number(item.shipping.value)===0?'Free shipping':item.shipping?`${money(item.shipping)} shipping`:'Shipping shown on eBay';
+      return `<article class="product-card">${image}<div class="body"><h3>${escapeHTML(item.title||'eBay listing')}</h3><div class="price">${money(item.price)}</div><div class="meta">${escapeHTML(item.condition||'Condition not listed')} · ${escapeHTML(shipping)}</div><a class="btn" href="${escapeHTML(item.url||'#')}" target="_blank" rel="noopener noreferrer">View on eBay ↗</a></div></article>`;
+    }).join('');
+  }catch(e){
+    msg.hidden=false; msg.textContent='Live eBay results could not load right now. You can still use the retailer search links below.';
+  }
+}
+
+document.getElementById('searchForm').addEventListener('submit',e=>{e.preventDefault();const q=document.getElementById('query').value.trim();
+  loadEbay(q);if(!q)return;const budget=document.getElementById('budget').value,condition=document.getElementById('condition').value;const words=[q,condition==='refurbished'?'refurbished':condition==='new'?'new':'',budget?'under $'+budget:''].filter(Boolean).join(' ');document.getElementById('retailResults').innerHTML=stores.map(s=>card(s.name,s.note,s.base+encodeURIComponent(words),'Search '+s.name)).join('');document.getElementById('results').hidden=false;document.getElementById('status').textContent='Search links are ready for “'+q+'”. Budget and condition are search keywords, not verified filters. Confirm each retailer’s final price.';document.getElementById('results').scrollIntoView({behavior:'smooth',block:'nearest'});});
+</script></body></html>
